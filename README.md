@@ -5,7 +5,7 @@ This light service prevents the Mullvad VPN app from interfering with Kubernetes
 Mullvad will clear firewall rules when reconnecting, so it's important to monitor Mullvad and re-apply these rules whenever that happens.
 
 ## Instructions
-Set `ALLOWED_ADDRESSES` in ./mullvad-allow-coredns.py to those that fit your Kubernetes cluster.
+Set `ALLOWED_ADDRESSES` in ./mullvad-allow-coredns.py to those that fit the service and pod networks on your Kubernetes cluster.
 
 Then run:
 ```shell
