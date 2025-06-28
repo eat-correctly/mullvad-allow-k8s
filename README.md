@@ -31,3 +31,12 @@ See if the domain name `kubernetes.default` can be resolved:
 ```shell
 kubectl exec -i -t dnsutils -- nslookup kubernetes.default
 ```
+
+You should quickly get an output like:
+```
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   kubernetes.default.svc.cluster.local
+Address: 10.96.0.1
+```
