@@ -5,10 +5,10 @@ from subprocess import Popen, PIPE, call
 from json import loads
 
 # If K0s:
-ALLOWED_ADDRESSES = ("10.96.0.0/12", "10.244.0.0/16")
+ALLOWED_ADDRESSES = ["10.96.0.0/12", "10.244.0.0/16"]
 
 # If K3s:
-# ALLOWED_ADDRESSES = ("10.42.0.0/16", "10.43.0.0/16")
+# ALLOWED_ADDRESSES = ["10.42.0.0/16", "10.43.0.0/16"]
 
 
 def main():
