@@ -1,28 +1,29 @@
-# mullvad-allow-coredns
-Mullvad VPN app and Kubernetes CoreDNS do not play well together. This fixes the issue.
+# Mullvad, allow K8s!
+Mullvad VPN app and Kubernetes (K8s) do not play well together. This fixes the issue.
 
-This light service prevents the Mullvad VPN app from interfering with Kubernetes' CoreDNS by adding a few firewall rules whenever Mullvad reconnects. 
-Mullvad will clear firewall rules when reconnecting, so it's important to monitor Mullvad and re-apply these rules whenever that happens.
+This repository consists of two nft tables inspired by [Mullvad's own split tunneling guide](https://mullvad.net/en/help/split-tunneling-with-linux-advanced), and instructions on how to install them.
+
+## Why?
+
+- Because Kubernetes developers want privacy and their own toy cluster on their machines. They want both, not one or the other.
+- Kubernetes uses an internal CoreDNS service which, as the name suggests, uses port 53 (DNS). This is a no-no port for Mullvad. Mullvad has special rules preventing arbitrary connections to this port specifically in order to prevent DNS leakage. Connecting to your ISP:s DNS server may indeed compromise your privacy, but CoreDNS operating locally within your K8s cluster does not.
+- Kubernetes uses a bridge, and any incoming external traffic to K8s will enter the bridge, and the response (SYN, ACK) will exit into the Mullvad VPN tunnel! This is bad, because its source address will no longer be the public IP address of your computer, but the IP address of the VPN.
 
 ## Instructions
 Download this repo:
 ```shell
-git clone https://github.com/eat-correctly/mullvad-allow-coredns.git
-cd mullvad-allow-coredns
+git clone https://github.com/eat-correctly/mullvad-allow-k8s.git
+cd mullvad-allow-k8s
 ```
 
-Set `ALLOWED_ADDRESSES` in ./mullvad-allow-coredns.py to those that fit the service and pod networks on your Kubernetes cluster.
+Set `MACHINE_ADDR` and `K8S_ADDR` to the correct addresses for your system in ./k8s_bypass_mullvad.nft.
 
 Then run:
 ```shell
-sudo install -o root -g root -m 755 \
-  mullvad-allow-coredns.py \
-  /usr/local/bin/mullvad-allow-coredns
-sudo install -o root -g root -m 755 \
-  mullvad-allow-coredns.service \
-  /etc/systemd/user/mullvad-allow-coredns.service
-sudo systemctl enable \
-  /etc/systemd/user/mullvad-allow-coredns.service --now
+sudo mkdir -p /etc/nftables.d
+sudo cp setup/k8s_bypass_mullvad.nft /etc/nftables.d/
+sudo sh -c 'echo "#!/usr/sbin/nft -f\ninclude \"/etc/nftables.d/*\"" > /etc/nftables.conf'
+sudo systemctl enable nftables --now
 ```
 
 You're done!
