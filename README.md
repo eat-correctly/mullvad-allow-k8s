@@ -7,7 +7,7 @@ This repository consists of two nft tables inspired by [Mullvad's own split tunn
 
 - Because Kubernetes developers want privacy and their own toy cluster on their machines. They want both, not one or the other.
 - Kubernetes uses an internal CoreDNS service which, as the name suggests, uses port 53 (DNS). This is a no-no port for Mullvad. Mullvad has special rules preventing arbitrary connections to this port specifically in order to prevent DNS leakage. Connecting to your ISP:s DNS server may indeed compromise your privacy, but CoreDNS operating locally within your K8s cluster does not.
-- Kubernetes uses a bridge, and any incoming external traffic to K8s will enter the bridge, and the response (SYN, ACK) will exit into the Mullvad VPN tunnel! This is bad, because its source address will no longer be the public IP address of your computer, but the IP address of the VPN.
+- Kubernetes uses a bridge, and any incoming external traffic to K8s will enter the bridge, and the response (SYN, ACK) will exit into the Mullvad VPN tunnel! This is bad, because its source address will no longer be the public IP address of your computer, but the IP address of the VPN. The client connected to your public IP address, not the VPN's address, so the response packet will be discarded.
 
 ## Instructions
 Download this repo:
