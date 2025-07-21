@@ -51,4 +51,4 @@ Address: 10.96.0.1
 ## For the nerds
 To understand why this works you can read this article from 2021.
 
-https://ro-che.info/articles/2021-02-27-linux-routing *(Make note of the fwmark. That's what we use to skip the Mullvad VPN routing table, although the fwmark is called 0x6d6f6c65 these days.)*
+https://ro-che.info/articles/2021-02-27-linux-routing *(Make note of the fwmark. That's what we use to skip the Mullvad VPN routing table, although the fwmark is called 0x6d6f6c65 these days and not 0xca6c like it says in the article.)*
