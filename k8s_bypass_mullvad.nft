@@ -20,29 +20,49 @@ delete table bridge k8s-bypass-mullvad
 table inet bypass-mullvad {
   chain prerouting {
     type filter hook prerouting priority -10; policy accept;
-    ip daddr $MACHINE_ADDR udp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip saddr $MACHINE_ADDR udp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+    ip daddr $MACHINE_ADDR udp dport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR udp sport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+  }
+
+  chain input {
+    type filter hook input priority -10; policy accept;
+    ip daddr $MACHINE_ADDR udp dport $NE_PORTS ct mark set 0x00000f41 accept;
+    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS ct mark set 0x00000f41 accept;
+    ip saddr $MACHINE_ADDR udp sport $NE_PORTS ct mark set 0x00000f41 accept;
+    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS ct mark set 0x00000f41 accept;
   }
 
   chain output {
     type route hook output priority -10; policy accept;
-    ip daddr $MACHINE_ADDR udp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip saddr $MACHINE_ADDR udp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+    ip daddr $MACHINE_ADDR udp dport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR udp sport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS meta mark set 0x6d6f6c65 accept;
   }
 }
 
 table bridge k8s-bypass-mullvad {
   chain prerouting {
     type filter hook prerouting priority -10; policy accept;
-    ip daddr $K8S_ADDR ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip daddr $K8S_ADDR ip saddr $K8S_ADDR ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip daddr $MACHINE_ADDR udp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip saddr $MACHINE_ADDR udp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+    ip daddr $K8S_ADDR ct mark set 0x00000f41 meta mark set 0x6d6f6c65 accept;
+    ip daddr $K8S_ADDR ip saddr $K8S_ADDR ct mark set 0x00000f41 meta mark set 0x6d6f6c65 accept;
+  }
+
+  chain input {
+    type filter hook input priority -10; policy accept;
+    ip daddr $MACHINE_ADDR udp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65 accept;
+    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR udp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS ct mark set 0x00000f41 meta mark set 0x6d6f6c65 accept;
+  }
+
+  chain output {
+    type filter hook output priority -10; policy accept;
+    ip daddr $MACHINE_ADDR udp dport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip daddr $MACHINE_ADDR tcp dport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR udp sport $NE_PORTS meta mark set 0x6d6f6c65 accept;
+    ip saddr $MACHINE_ADDR tcp sport $NE_PORTS meta mark set 0x6d6f6c65 accept;
   }
 }
